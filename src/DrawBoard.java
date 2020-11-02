@@ -1,6 +1,9 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,8 +11,7 @@ import javax.swing.JPanel;
 
 public class DrawBoard {
 	
-	int dimension;
-	int Csize;
+	int dimension = 3; //default 
 	JFrame frame;
 	Board canvas;
 	BoardGenerator board;
@@ -18,7 +20,7 @@ public class DrawBoard {
 	public DrawBoard() {
 		this.dimension = 3;
 		this.board = new BoardGenerator();
-		Csize = XSIZE / dimension;
+		CSIZE = XSIZE / dimension;
 		
 		init();
 	}
@@ -27,14 +29,14 @@ public class DrawBoard {
 	public DrawBoard(BoardGenerator b) {
 		this.dimension = b.dimension;
 		this.board = b;
-		Csize = XSIZE / dimension;
+		CSIZE = XSIZE / dimension;
 		
 		init();
 	}
 	
 	private final int X = 640;
 	private final int XSIZE = 600;
-	//	private int Csize =  XSIZE / dimension;
+	private int CSIZE =  XSIZE / dimension;
 	
 	public void init() {	
 		
@@ -71,17 +73,22 @@ public class DrawBoard {
 		canvas.repaint();
 	}
 	
-	class Board extends JPanel {	
+	class Board extends JPanel implements MouseListener  /*, MouseMotionListener*/ {	
+		
+		public Board() {
+			addMouseListener(this);
+			//addMouseMotionListener(this);
+		}
+		
 		public void paintComponent(Graphics g) {
 			for(int x = 0; x < dimension; x++) {
 				for(int k = 0; k < dimension; k++ ) {
 
-					System.out.println("x,y " + x + "," + k + "  typ:  " + board.Board[x][k].type);
 					
 					g.setColor(new Color(170,170,170)); //Light Gray
-					g.fillRect(x*Csize,k*Csize,Csize,Csize);
+					g.fillRect(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 					g.setColor(Color.BLACK);
-					g.drawRect(x*Csize,k*Csize,Csize,Csize);
+					g.drawRect(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 					
 					//For Peices to be Drawn
 					if(board.Board[x][k].side == 0) {
@@ -96,31 +103,108 @@ public class DrawBoard {
 						
 						g.setFont(new Font("Arial",Font.BOLD,40));
 						//Draw String in JPanel
-						g.drawString("M",x*Csize+15,k*Csize+50);
+						g.drawString("M",x*CSIZE+15,k*CSIZE+50);
 						
 					} else if (board.Board[x][k].type == 'h') {
 						
 						g.setFont(new Font("Arial",Font.BOLD,40));
 						//Draw String in JPanel
-						g.drawString("H",x*Csize+15,k*Csize+50);
+						g.drawString("H",x*CSIZE+15,k*CSIZE+50);
 						
 					} else if (board.Board[x][k].type == 'w') {
 						
 						g.setFont(new Font("Arial",Font.BOLD,40));
 						//Draw String in JPanel
-						g.drawString("W",x*Csize+15,k*Csize+50);
+						g.drawString("W",x*CSIZE+15,k*CSIZE+50);
 					} //For Peices to be Drawn
 					
 					
 					
 					if(board.Board[x][k].isPit == true) {
 						g.setColor(new Color(75,75,75)); //Dark Grey
-						g.fillOval(x*Csize,k*Csize,Csize,Csize);
+						g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 					}
 					
+					if(board.Board[x][k].isSelected == true) {
+						g.setColor(new Color(255,255,50)); //Yellow
+						g.fillOval(x*CSIZE,k*CSIZE,10,10);
+						g.drawRect(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
+					}
 					
 				}
 			}
 		}
+		
+		/*
+		@Override
+		public void mouseDragged(MouseEvent e) {}
+		
+		@Override
+		public void mouseMoved(MouseEvent e) {}
+		*/
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			try {
+				int x = e.getX()/CSIZE;	
+				int y = e.getY()/CSIZE;
+				Node cur = board.Board[x][y];
+				
+				if(board.hasSelected()) {
+					if((x > -1 && x < dimension) && (y > -1 && y < dimension)) {      //inbounds
+						Node prev = board.getSelected();
+						if(Math.abs(x - prev.x) <= 1  && Math.abs(y - prev.y) <= 1) { //within 1
+							if(cur.canTraverse(prev) && !cur.isCollision(prev)) {                               //is Traversable
+								//Move Piece
+								board.Board[x][y].type = prev.type;
+								board.Board[x][y].side = prev.side;
+								board.Board[prev.x][prev.y].reset();
+							}
+							if(cur.isCollision(prev)) {
+								//Capture Piece
+								cur = cur.resolve(prev);
+								board.Board[x][y].type = cur.type;
+								board.Board[x][y].side = cur.side;
+								board.Board[prev.x][prev.y].reset();
+								
+								
+							}
+						}
+					}
+					
+				} else {
+					if (cur.isPiece()) {
+						cur.isSelected = true;
+					}
+				}
+				
+
+				
+				/*
+				if(cur.isSelected) {
+					cur.isSelected = false;
+					
+				} else {
+					cur.isSelected = true;
+				}*/
+				
+				
+				updateBoard();
+				
+			} catch(Exception e1) {}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+		
 	}	
 }
