@@ -17,7 +17,7 @@ public class BoardGenerator {
 	//Constructor for dimensions
 	public BoardGenerator(int d) {
 		if( d == 3 || d == 6 || d == 9 ) {
-			dimension = d;
+			this.dimension = d;
 		} else {
 			System.out.println("ERROR/ cannot continue");
 			System.exit(0);
@@ -29,7 +29,26 @@ public class BoardGenerator {
 		genPits();
 		genPieces();
 	}
-	
+	public boolean hasSelected() {
+		for(int i = 0; i < dimension; i ++) {
+			for( int k = 0; k < dimension; k ++) {
+				if(Board[i][k].isSelected) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public Node getSelected() {
+		for(int i = 0; i < dimension; i ++) {
+			for( int k = 0; k < dimension; k ++) {
+				if(Board[i][k].isSelected) {
+					return Board[i][k];
+				}
+			}
+		}
+		return null;
+	}
 	
 	//Initializer for non-nulling Nodes in the list
 	public void init() {
@@ -49,6 +68,7 @@ public class BoardGenerator {
 			int u = dimension;
 			int l = 1;
 			int r = (int) (Math.random() * (u - l)) + l;
+			
 			
 			this.Board[r][i].isPit = true;
 			
