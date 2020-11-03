@@ -53,8 +53,9 @@ public class BoardGenerator {
 	public void traverse() {
 		for(int i = 0; i < dimension; i ++) {
 			for( int k = 0; k < dimension; k ++) {
-				System.out.println("");
+				System.out.print(""+ Board[i][k].type+ " : " +Board[i][k].side +" ");
 			}
+			System.out.println();
 		}
 		return;
 	}
