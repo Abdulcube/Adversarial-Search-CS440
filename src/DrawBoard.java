@@ -29,6 +29,8 @@ public class DrawBoard {
 	public DrawBoard(BoardGenerator b) {
 		this.dimension = b.dimension;
 		this.board = b;
+		this.board.turn = b.turn;
+		
 		CSIZE = XSIZE / dimension;
 		
 		init();
@@ -74,6 +76,7 @@ public class DrawBoard {
 	}
 	
 	class Board extends JPanel implements MouseListener  /*, MouseMotionListener*/ {	
+
 		
 		public Board() {
 			addMouseListener(this);
@@ -150,7 +153,7 @@ public class DrawBoard {
 				int y = e.getY()/CSIZE;
 				Node cur = board.Board[x][y];
 				
-				if(board.hasSelected()) {
+				if(board.hasSelected()) { //placing piece
 					if((x > -1 && x < dimension) && (y > -1 && y < dimension)) {      //inbounds
 						Node prev = board.getSelected();
 						if(Math.abs(x - prev.x) <= 1  && Math.abs(y - prev.y) <= 1) { //within 1
@@ -159,6 +162,7 @@ public class DrawBoard {
 								board.Board[x][y].type = prev.type;
 								board.Board[x][y].side = prev.side;
 								board.Board[prev.x][prev.y].reset();
+								board.turn = 1;
 							}
 							if(cur.isCollision(prev)) {
 								//Capture Piece
@@ -166,32 +170,19 @@ public class DrawBoard {
 								board.Board[x][y].type = cur.type;
 								board.Board[x][y].side = cur.side;
 								board.Board[prev.x][prev.y].reset();
-								
-								
+								board.turn = 1;
 							}
 						}
 					}
-					
-				} else {
+				} else { //selecting piece
 					if (cur.isPiece()) {
 						cur.isSelected = true;
 					}
 				}
 				
-
-				
-				/*
-				if(cur.isSelected) {
-					cur.isSelected = false;
-					
-				} else {
-					cur.isSelected = true;
-				}*/
-				
-				
 				updateBoard();
 				
-			} catch(Exception e1) {}
+			} catch(Exception e1) {} //Needed for mouseListener
 		}
 
 		@Override
