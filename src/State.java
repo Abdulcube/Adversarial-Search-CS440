@@ -17,7 +17,7 @@ public class State {
 	public State(Node[][] j) {
 		dimension = j.length;
 		grid = new Node[j.length][j.length];
-		
+
 		for (int i = 0; i < dimension; i++) {
 			for (int k = 0; k < dimension; k++) {
 				Node n = new Node(j[i][k]);
@@ -46,9 +46,18 @@ public class State {
 		h = x - y;
 	}
 
-	
 	public void traverse() {
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < dimension; i++) {
+			for (int k = 0; k < dimension; k++) {
+				System.out.print("" + grid[i][k].type +  " ");
+			}
+			System.out.println();
+		}
+		return;
+	}
+
+	public void traverseS() {
+		for (int i = 0; i < dimension; i++) {
 			for (int k = 0; k < dimension; k++) {
 				System.out.print("" + grid[i][k].type + " : " + grid[i][k].side + " ");
 			}
