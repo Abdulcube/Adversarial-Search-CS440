@@ -1,31 +1,59 @@
+import java.util.Scanner;
 
 public class Execv {
-	public static void main(String[] args) throws CloneNotSupportedException {
-
-
+	public static void main(String[] args) {
+			
+		
+		
 		//Can be 3,6, or 9
-		BoardGenerator b = new BoardGenerator(6);
-	 	Tree t = new Tree(b);
-		//DrawBoard d = new DrawBoard(b);
-	//	t.traverse();
-
-
-		Queue q = t.turns(t,1);
-		t.traverse();
+		BoardGenerator b = new BoardGenerator(3);
+		
+		DrawBoard d = new DrawBoard(b);
+		
+		State s = new State(b.Board);
+		
+		Queue q = Algorithm.turns(s,0);
 		q.traverse();
-		System.out.println();
-		b.traverse();
-		/*	b.traverse();
-		System.out.println(" Pow ");
-		t.traverse();
-		//DrawBoard d = new DrawBoard(b);
-		Queue p = new Queue();
-		p.add(t);
-		p.add(t);
-		p.traverse();*/
-
-		//System.out.println("" + p.pop().dimension);
-
-
+		
+		
+		//int turn = d.board.turn;
+		
+		System.out.println("turn: " + 	d.board.turn);
+		
+		/*
+		while(true) { //game not over
+			
+			
+			if(d.board.getTurn() == 0) { //users turn
+				continue;
+			}
+			if(d.board.getTurn() == 1) {
+				System.out.println(":");
+				Algorithm a = new Algorithm(b.Board);
+				b.Board = a.finalState.grid;
+				
+				//System.out.println(":");
+				
+				d.updateBoard();
+				
+				d.board.turn = 0;
+			}
+		}
+		*/
+		while(true) {
+			 Scanner scan = new Scanner(System.in);
+			 int num = scan.nextInt();
+			 
+			  if (num == 1) {
+					System.out.println(":");
+					Algorithm a = new Algorithm(d.board.Board); //b.Board
+					d.board.Board = a.finalState.grid;
+					
+					//System.out.println(":");
+					
+					d.updateBoard();
+			  }
+		}
+		
 	}
 }
