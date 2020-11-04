@@ -2,6 +2,7 @@
 //Nodes make up the entirety of the the board spaces
 public class Node { 
 	
+	//Node[][] state;
 	int side = -1; //0 for home (white) 1 for away (dark) -1 for non peices
 	char type = 'n';  //'h' for hero 'w' for wumpus 'm' for mage 'n' for null
 	
@@ -10,12 +11,21 @@ public class Node {
 	
 	int x;
 	int y;
-	
-
 	//Default Constructor for BoardGenerator
 	public Node(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.side = -1;
+	}
+	
+	public Node(Node n) {
+		this.x = n.x;
+		this.y = n.y;
+		
+		this.side = n.side;
+		this.type = n.type;
+		this.isPit = n.isPit;
+		this.isSelected = n.isSelected;
 	}
 	
 	//Only pieces can move
