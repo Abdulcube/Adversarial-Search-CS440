@@ -14,21 +14,34 @@ public class Algorithm {
 		int v = 0;
 		if(type == 0){
 			v = minMax(t, depth , i, depth);
-			if(finalState == null && i == 0){
+			if(finalState == null && t.y == 0){
 					System.out.println("Game OVER White Wins!");
 				return;
-			} else if(finalState == null && i == 1){
+			} else if(finalState == null && t.x == 0){
 					System.out.println("Game OVER Red Wins!");
+				return;
+			} else if(finalState.x == 0){
+				System.out.println("Game OVER Red Wins!");
+				return;
+			}
+			else if(finalState.y == 0){
+				System.out.println("Game OVER White Wins!");
 				return;
 			}
 			System.out.println("Final Heuristic of minimax Search: " + Math.abs(finalState.h));
 		} else {
 			v = alphaBeta(t, depth , 0,0,i, depth);
-			if(finalState == null && i == 0){
+			if(finalState == null && t.y == 0){
 					System.out.println("Game OVER White Wins!");
 				return;
-			} else if(finalState == null && i == 1){
+			} else if(finalState == null && t.x == 0){
 					System.out.println("Game OVER Red Wins!");
+				return;
+			}else if(finalState.x == 0){
+				System.out.println("Game OVER Red Wins!");
+				return;
+			}else if(finalState.y == 0){
+				System.out.println("Game OVER White Wins!");
 				return;
 			}
 			System.out.println("Final Heuristic of alphaBeta pruning with Minimax Search: " + Math.abs(finalState.h));
