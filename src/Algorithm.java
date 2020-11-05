@@ -92,7 +92,7 @@ public class Algorithm {
 		}
 	}
 
-	// Working Minimax Algorithm
+	// Working alphaBeta Algorithm
 	public int alphaBeta(State t, int depth, int alpha, int beta, int turn, int start) {
 		// Base case
 		if(t.x == 0 && turn == 1){
