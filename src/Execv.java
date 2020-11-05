@@ -14,7 +14,7 @@ public class Execv {
 		int k =0;
 		while( k!=1){
 			k = IO.readInt();
-		 	Algorithm j = new Algorithm(b.Board, 1 , 2);
+		 	Algorithm j = new Algorithm(b.Board, 1 , 1);
 			b.Board = j.finalState.grid;
 			if(j.finalState.x == 0 || j.finalState.y == 0){
 				return ;

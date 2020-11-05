@@ -19,9 +19,10 @@ public class Algorithm {
 	// Untested minMax, Turns must work first;
 	public int minMax(State t, int depth, int turn, int start) {
 		// Base case
-		if(t.x == 0 && turn == 0){
+		System.out.println("Depth: " + depth);
+		if(t.x == 0 && turn == 1){
 			return -20;
-		} else if(t.y == 0 && turn == 1){
+		} else if(t.y == 0 && turn == 0){
 			return 20;
 		}
 		if (depth == 0 || t.grid == null ) {
@@ -32,15 +33,16 @@ public class Algorithm {
 		if (turn == 0) {
 			Queue p = turns(t, 0);
 			int val = -100;
+		//	p.traverse();
 
 			while (!p.isEmpty()) {
-				State a = p.pop();
-				int runner = Math.max(val, minMax(a, depth - 1, 1,start));
+				State a = p.popsB();
+				int runner = Math.max(val, minMax(a, depth - 1, 1,start)) + t.h;
 				if (val < runner) {
 					//finalState = a;
 					val = runner;
 					if(start == depth){
-						//System.out.print()
+						System.out.println("Final H1: " + a.h);
 						finalState = a;
 					}
 				}
@@ -50,18 +52,20 @@ public class Algorithm {
 		} else {
 			Queue p = turns(t, 1);
 			int val = 100;
-
+		//	p.traverse();
 			while (!p.isEmpty()) {
-				State a = p.popsB();
-				int runner = Math.min(val, minMax(a, depth - 1, 0,start));
+				State a = p.pop();
+
+				int runner = Math.min(val, minMax(a, depth - 1, 0,start)) + t.h;
 				if (val > runner) {
 
 					//finalState = a;
-					val = runner;
+						val = runner;
 					if(start == depth){
-						//System.out.print()
+						System.out.println("Final H2: " + a.h + runner + val);
 						finalState = a;
 					}
+
 				}
 
 			}
@@ -91,17 +95,24 @@ public class Algorithm {
 									continue;
 
 								} else {
-									if (t.grid[tempX][tempY].side == 1 ) { //is their peice
+									if (t.grid[tempX][tempY].side == 1  ) { //is their peice
 
 										State s = new State(t.grid);
-										s.grid[tempX][tempY] = t.grid[i][k];
-										s.grid[i][k].reset();
-										s.h ++;
-										result.add(s);
+
+										Node Brian = s.grid[tempX][tempY].resolve(s.grid[i][k]);
+										if(Brian.type == t.grid[i][k].type && Brian.side != -1){
+											s.grid[tempX][tempY] = new Node(Brian);
+											s.grid[i][k] = new Node(i,k);
+											s.h ++;
+
+											result.add(s);
+
+										}
 									} else {
 										State s = new State(t.grid);
-										s.grid[tempX][tempY] = t.grid[i][k];
+
 										s.grid[i][k].reset();
+										s.grid[tempX][tempY] = t.grid[i][k];
 										result.add(s);
 									}
 								}
@@ -127,17 +138,23 @@ public class Algorithm {
 									continue;
 
 								} else {
-									if (t.grid[tempX][tempY].side == 0) { //is their peice
 
+									if (t.grid[tempX][tempY].side == 0) { //is their peice
 										State s = new State(t.grid);
-										s.grid[tempX][tempY] = t.grid[i][k];
-										s.grid[i][k].reset();
-										s.h--;
-										result.add(s);
+										Node Brian = s.grid[tempX][tempY].resolve(s.grid[i][k]);
+										System.out.println("Result : " + Brian.type +s.grid[tempX][tempY].type + s.grid[i][k].type );
+										if(Brian.type == t.grid[i][k].type && Brian.side != -1){
+												System.out.println("True");
+											s.grid[tempX][tempY] = new Node(Brian);
+											s.grid[i][k] = new Node(i,k);
+											s.h --;
+											result.add(s);
+										}
 									} else {
 										State s = new State(t.grid);
-										s.grid[tempX][tempY] = t.grid[i][k];
+
 										s.grid[i][k].reset();
+										s.grid[tempX][tempY] = t.grid[i][k];
 										result.add(s);
 									}
 								}
