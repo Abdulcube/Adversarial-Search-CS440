@@ -18,6 +18,7 @@ public class Execv {
 
 		while(true){
 			k = IO.readString();
+			//Change the 3rd parameter to adjust depth!
 		 	Algorithm j = new Algorithm(b.Board, 1 , 3, typer);
 			if(j.finalState == null){
 					//System.out.println("Game OVER");
