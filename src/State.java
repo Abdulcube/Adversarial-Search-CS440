@@ -40,7 +40,7 @@ public class State {
 			}
 		}
 		if (x == 0 && y == 0) {
-			System.out.print("GAME OVER");
+			System.out.print("GAME OVER: Draw");
 			System.exit(0);
 		}
 		h = x - y;

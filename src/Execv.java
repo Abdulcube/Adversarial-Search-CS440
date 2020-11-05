@@ -10,11 +10,19 @@ public class Execv {
 			DrawBoard d = new DrawBoard(b);
 	//	DrawBoard d = new DrawBoard(b);
 	// Works!!! to an extent lol
+		System.out.print("Run regular minimax(0) or Alpha Pruning(1): ");
+		int typer = IO.readInt();
+		System.out.println();
+		String k ="0";
+			System.out.print("Press Enter when Player turn ends: ");
 
-		int k =0;
-		while( k!=1){
-			k = IO.readInt();
-		 	Algorithm j = new Algorithm(b.Board, 1 , 1);
+		while(true){
+			k = IO.readString();
+		 	Algorithm j = new Algorithm(b.Board, 1 , 3, typer);
+			if(j.finalState == null){
+					//System.out.println("Game OVER");
+				System.exit(0);
+			}
 			b.Board = j.finalState.grid;
 			if(j.finalState.x == 0 || j.finalState.y == 0){
 				return ;
@@ -22,6 +30,7 @@ public class Execv {
 		//.	sleep(2);
 
 			d.updateBoard();
+			System.out.print("Press Enter when Player turn ends: ");
 		}
 
 /*

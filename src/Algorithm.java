@@ -6,73 +6,131 @@ public class Algorithm {
 	BoardGenerator b;
 	DrawBoard d;
 
-	public Algorithm (Node[][] g, int i, int depth){
-		System.out.println("____________________");
+	public Algorithm (Node[][] g, int i, int depth, int type){
+		System.out.println("-----------------");
+		System.out.println();
 		//changes state to new board after the best possible move has been made
 		State t = new State(g);
 		int v = 0;
+		if(type == 0){
+			v = minMax(t, depth , i, depth);
+			if(finalState == null && i == 0){
+					System.out.println("Game OVER White Wins!");
+				return;
+			} else if(finalState == null && i == 1){
+					System.out.println("Game OVER Red Wins!");
+				return;
+			}
+			System.out.println("Final Heuristic of minimax Search: " + Math.abs(finalState.h));
+		} else {
+			v = alphaBeta(t, depth , 0,0,i, depth);
+			if(finalState == null && i == 0){
+					System.out.println("Game OVER White Wins!");
+				return;
+			} else if(finalState == null && i == 1){
+					System.out.println("Game OVER Red Wins!");
+				return;
+			}
+			System.out.println("Final Heuristic of alphaBeta pruning with Minimax Search: " + Math.abs(finalState.h));
 
-		v = minMax(t, depth , i, depth);
-
+		}
 	}
 
-	// Untested minMax, Turns must work first;
+	// Working Minimax Algorithm
 	public int minMax(State t, int depth, int turn, int start) {
 		// Base case
-		System.out.println("Depth: " + depth);
 		if(t.x == 0 && turn == 1){
 			return -20;
 		} else if(t.y == 0 && turn == 0){
 			return 20;
 		}
 		if (depth == 0 || t.grid == null ) {
-		//	finalState = t;
 			return t.h;
 		}
 		// Homes turn
 		if (turn == 0) {
 			Queue p = turns(t, 0);
 			int val = -100;
-		//	p.traverse();
-
 			while (!p.isEmpty()) {
 				State a = p.popsB();
-				int runner = Math.max(val, minMax(a, depth - 1, 1,start)) + t.h;
+				int runner = Math.max(val, minMax(a, depth - 1, 1,start));
 				if (val < runner) {
-					//finalState = a;
 					val = runner;
 					if(start == depth){
-						System.out.println("Final H1: " + a.h);
 						finalState = a;
 					}
 				}
-
 			}
 			return val;
 		} else {
 			Queue p = turns(t, 1);
 			int val = 100;
-		//	p.traverse();
 			while (!p.isEmpty()) {
 				State a = p.pop();
-
-				int runner = Math.min(val, minMax(a, depth - 1, 0,start)) + t.h;
+				int runner = Math.min(val, minMax(a, depth - 1, 0,start));
 				if (val > runner) {
-
-					//finalState = a;
 						val = runner;
-					if(start == depth){
-						System.out.println("Final H2: " + a.h + runner + val);
+					if(start == depth){//Sets the final best heuristic to final state
 						finalState = a;
 					}
-
 				}
-
 			}
-
 			return val;
 		}
 	}
+
+	// Working Minimax Algorithm
+	public int alphaBeta(State t, int depth, int alpha, int beta, int turn, int start) {
+		// Base case
+		if(t.x == 0 && turn == 1){
+			return -20;
+		} else if(t.y == 0 && turn == 0){
+			return 20;
+		}
+		if (depth == 0 || t.grid == null ) {
+			return t.h;
+		}
+		// Homes turn
+		if (turn == 0) {
+			Queue p = turns(t, 0);
+			int val = -100;
+			while (!p.isEmpty()) {
+				State a = p.popsB();
+				int runner = Math.max(val, alphaBeta(a, depth - 1, alpha, beta,1,start));
+
+				if (val < runner) {
+					val = runner;
+					if(start == depth){
+						finalState = a;
+					}
+				}
+				alpha = Math.max(alpha, val);
+				if(alpha>=beta){
+					break;
+				}
+			}
+			return val;
+		} else {
+			Queue p = turns(t, 1);
+			int val = 100;
+			while (!p.isEmpty()) {
+				State a = p.pop();
+				int runner = Math.min(val, alphaBeta(a, depth - 1, alpha, beta, 0,start));
+				if (val > runner) {
+						val = runner;
+					if(start == depth){//Sets the final best heuristic to final state
+						finalState = a;
+					}
+				}
+				beta = Math.min(beta, val);
+				if(alpha>=beta){
+					break;
+				}
+			}
+			return val;
+		}
+	}
+
 
 	// Explores a state and returns priority Queue continaining the best moves
 	public static Queue turns(State t, int turn) {
@@ -105,6 +163,12 @@ public class Algorithm {
 											s.grid[i][k] = new Node(i,k);
 											s.h ++;
 
+											result.add(s);
+
+										} else if(t.grid[tempX][tempY].type == s.grid[i][k].type){
+											s.grid[tempX][tempY] = new Node(Brian);
+											s.grid[i][k] = new Node(i,k);
+											s.h +=.5;
 											result.add(s);
 
 										}
@@ -142,13 +206,20 @@ public class Algorithm {
 									if (t.grid[tempX][tempY].side == 0) { //is their peice
 										State s = new State(t.grid);
 										Node Brian = s.grid[tempX][tempY].resolve(s.grid[i][k]);
-										System.out.println("Result : " + Brian.type +s.grid[tempX][tempY].type + s.grid[i][k].type );
+										//System.out.println("Result : " + Brian.type +s.grid[tempX][tempY].type + s.grid[i][k].type );
 										if(Brian.type == t.grid[i][k].type && Brian.side != -1){
-												System.out.println("True");
+
 											s.grid[tempX][tempY] = new Node(Brian);
 											s.grid[i][k] = new Node(i,k);
 											s.h --;
+											//System.out.println("True" + s.h);
 											result.add(s);
+										} else if(t.grid[tempX][tempY].type == s.grid[i][k].type){
+											s.grid[tempX][tempY] = new Node(Brian);
+											s.grid[i][k] = new Node(i,k);
+											s.h -=.5;
+											result.add(s);
+
 										}
 									} else {
 										State s = new State(t.grid);
