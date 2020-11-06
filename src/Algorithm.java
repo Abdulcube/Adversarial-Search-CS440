@@ -7,13 +7,15 @@ public class Algorithm {
 	DrawBoard d;
 
 	public Algorithm (Node[][] g, int i, int depth, int type){
-		System.out.println("-----------------");
-		System.out.println();
 		//changes state to new board after the best possible move has been made
 		State t = new State(g);
 		int v = 0;
 		if(type == 0){
 			v = minMax(t, depth , i, depth);
+
+			if(finalState == null && t.x!=0 && t.y!= 0){
+
+			}
 			if(finalState == null && t.y == 0){
 					System.out.println("Game OVER White Wins!");
 				return;
@@ -28,7 +30,9 @@ public class Algorithm {
 				System.out.println("Game OVER White Wins!");
 				return;
 			}
-			System.out.println("Final Heuristic of minimax Search: " + Math.abs(finalState.h));
+			System.out.println("Final Heuristic of alphaBeta pruning with Minimax Search: " + Math.abs(finalState.h));
+			System.out.println("-----------------");
+			System.out.println();
 		} else {
 			v = alphaBeta(t, depth , 0,0,i, depth);
 			if(finalState == null && t.y == 0){
@@ -44,35 +48,46 @@ public class Algorithm {
 				System.out.println("Game OVER White Wins!");
 				return;
 			}
-			System.out.println("Final Heuristic of alphaBeta pruning with Minimax Search: " + Math.abs(finalState.h));
-
+			System.out.println();
+			System.out.println("Final Heuristic of alphaBeta pruning with alphaBeta Search: " + Math.abs(finalState.h));
+			System.out.println("-----------------");
+			System.out.println();
 		}
 	}
 
 	// Working Minimax Algorithm
 	public int minMax(State t, int depth, int turn, int start) {
 		// Base case
+		//System.out.println("Depth: " + depth);
 		if(t.x == 0 && turn == 1){
 			return -20;
 		} else if(t.y == 0 && turn == 0){
 			return 20;
 		}
 		if (depth == 0 || t.grid == null ) {
+			//System.out.println(100000);
 			return t.h;
 		}
 		// Homes turn
 		if (turn == 0) {
 			Queue p = turns(t, 0);
 			int val = -100;
+		//	System.out.println("p init: " +p.size);
+
 			while (!p.isEmpty()) {
 				State a = p.popsB();
 				int runner = Math.max(val, minMax(a, depth - 1, 1,start));
 				if (val < runner) {
+				//	System.out.println("value + runner+ start + depth: "+ val+", "+runner + ", " + start + ", "+ depth);
 					val = runner;
 					if(start == depth){
 						finalState = a;
+							//System.out.println("A Final");
 					}
 				}
+			}
+			if(val == -100){
+				return t.h;
 			}
 			return val;
 		} else {
@@ -81,12 +96,15 @@ public class Algorithm {
 			while (!p.isEmpty()) {
 				State a = p.pop();
 				int runner = Math.min(val, minMax(a, depth - 1, 0,start));
-				if (val > runner) {
+				if (val >runner) {
 						val = runner;
 					if(start == depth){//Sets the final best heuristic to final state
 						finalState = a;
 					}
 				}
+			}
+			if(val == 100){
+				return t.h;
 			}
 			return val;
 		}
@@ -122,6 +140,9 @@ public class Algorithm {
 					break;
 				}
 			}
+			if(val == -100){
+				return t.h;
+			}
 			return val;
 		} else {
 			Queue p = turns(t, 1);
@@ -139,6 +160,9 @@ public class Algorithm {
 				if(alpha>=beta){
 					break;
 				}
+			}
+			if(val == 100){
+				return t.h;
 			}
 			return val;
 		}

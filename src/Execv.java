@@ -6,17 +6,24 @@ public class Execv {
 
 
 		//Can be 3,6, or 9
-		BoardGenerator b = new BoardGenerator(3);
-			DrawBoard d = new DrawBoard(b);
+
 	//	DrawBoard d = new DrawBoard(b);
 	// Works!!! to an extent lol
 		System.out.print("Run regular minimax(0) or Alpha Pruning(1): ");
 		int typer = IO.readInt();
 		System.out.println();
 		String k ="0";
-			System.out.print("Press Enter when Player turn ends: ");
+		System.out.print("What board size(must be 3, 6, 9): ");
+		int bSize = IO.readInt();
+		BoardGenerator b = new BoardGenerator(bSize);
+		DrawBoard d = new DrawBoard(b);
+		System.out.println();
+		System.out.print("Agent vs Agent(2) or PVA(1):");
+		int AI = IO.readInt();
+		System.out.println();
+		System.out.print("Press Enter when Player turn ends: ");
 
-		while(true){
+		while(AI==1){
 			k = IO.readString();
 			//Change the 3rd parameter to adjust depth!
 		 	Algorithm j = new Algorithm(b.Board, 1 , 3, typer);
@@ -33,6 +40,30 @@ public class Execv {
 			d.updateBoard();
 			System.out.print("Press Enter when Player turn ends: ");
 		}
+		int turn = 0;
+		while(AI==2){
+			k = IO.readString();
+			//Change the 3rd parameter to adjust depth!
+			Algorithm j = new Algorithm(b.Board, turn , 3, typer);
+			if(j.finalState == null){
+					//System.out.println("Game OVER");
+				System.exit(0);
+			}
+			b.Board = j.finalState.grid;
+			if(j.finalState.x == 0 || j.finalState.y == 0){
+				return ;
+			}
+			if(turn == 0){
+				turn =1;
+			} else {
+				turn = 0;
+			}
+		//.	sleep(2);
+
+			d.updateBoard();
+			System.out.print("Press Enter when Next Agent steps: ");
+		}
+
 
 /*
 		// Works!!!
